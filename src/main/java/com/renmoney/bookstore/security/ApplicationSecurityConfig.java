@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import static com.renmoney.bookstore.security.ApplicationUserPermission.*;
 import static com.renmoney.bookstore.security.ApplicationUserRole.*;
@@ -39,16 +38,18 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
+//                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(WHITELIST).permitAll()
                 .antMatchers("/api/**").hasAnyRole(NORMAL.name(), ADMIN_ASSISTANT.name(), ADMIN.name())
+                .antMatchers(HttpMethod.DELETE,"/management/api/**").hasAuthority(BOOK_WRITE.getPermission())
+                .antMatchers(HttpMethod.POST,"/management/api/**").hasAuthority(BOOK_WRITE.getPermission())
+                .antMatchers(HttpMethod.PUT,"/management/api/**").hasAuthority(BOOK_WRITE.getPermission())
+                .antMatchers(HttpMethod.GET,"/management/api/**").hasAnyRole(ADMIN.name(), ADMIN_ASSISTANT.name())
                 .anyRequest()
                 .authenticated()
                 .and()
-                .formLogin();
-//                .httpBasic();
+                .httpBasic();
     }
 
     @Override

@@ -25,13 +25,6 @@ public class BookManagementAPI {
         this.bookService = bookService;
     }
 
-    @GetMapping
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ADMIN_ASSISTANT')")
-    public BaseResponse<List<Book>> getAllBooks() {
-        return ResponseUtil.success("Request Successful", bookService.getAllBooks());
-    }
-
-
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public BaseResponse<Book> addBook(@RequestBody BookParams params) {
