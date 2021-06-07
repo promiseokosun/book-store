@@ -26,4 +26,5 @@ public interface BookService {
 
     List<Book> searchBooks(String searchTerm);
 
+    Book restoreBook(Integer bookId);
 }

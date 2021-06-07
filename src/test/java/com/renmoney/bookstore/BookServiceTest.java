@@ -20,7 +20,7 @@ public class BookServiceTest {
 
     private final BookService bookService;
     private Book book;
-    private  List<Book> books;
+    private List<Book> books;
     private Integer bookId;
     private String bookStatus;
     private String searchTerm;
@@ -139,7 +139,7 @@ public class BookServiceTest {
     }
 
     private void whenSearchBooksIsInvokedParsingValidBookTitleOrDescriptionOrContributorName() {
-        searchTerm = "Punishment";
+        searchTerm = "adams";
         books = bookService.searchBooks(searchTerm);
     }
 
@@ -158,6 +158,23 @@ public class BookServiceTest {
 
     private void thenReturnEmptyList() {
         assertTrue(books.size() == 0);
+    }
+
+    @Test
+    public void test_restoreBook() {
+        givenThatUserIsLoggedIn();
+        whenRestorBookIsInvoked();
+        thenBookStatusShouldBeSetToAVAILABLE();
+    }
+
+    private void whenRestorBookIsInvoked() {
+        Integer bookId = 3;
+        book = bookService.restoreBook(bookId);
+        bookStatus = book.getStatus().name();
+    }
+
+    private void thenBookStatusShouldBeSetToAVAILABLE() {
+        books = bookService.getBooksByStatus(BookStatus.AVAILABLE);
     }
 
 

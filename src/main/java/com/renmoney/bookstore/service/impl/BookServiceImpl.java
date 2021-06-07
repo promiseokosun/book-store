@@ -100,6 +100,18 @@ public class BookServiceImpl implements BookService {
      }
 
 
+    @Override
+    public Book restoreBook(Integer bookId) {
+        Optional<Book> optionalBook = bookRepo.findById(bookId);
+        if(optionalBook.isPresent()) {
+            Book book = optionalBook.get();
+            book.setStatus(BookStatus.AVAILABLE);
+            return book;
+        }
+        return null;
+    }
+
+
 
     private void loadDummyBooks() {
         List<Book> books = new ArrayList<>();

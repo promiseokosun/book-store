@@ -95,4 +95,21 @@ public class ManagementAPI {
 
     }
 
+    @PutMapping("books/{bookId}/restore")
+    @PreAuthorize("hasAuthority('book:lend')")
+    public BaseResponse<Book> restoreBook(@PathVariable("bookId") Integer bookId) {
+
+        if(bookId.equals(null)) {
+            return ResponseUtil.invalidOrNullInput("Please Specify bookId");
+        }
+
+        Book book = bookService.restoreBook(bookId);
+
+        if(book == null) {
+            return ResponseUtil.invalidOrNullInput("Book Not Found");
+        }
+
+        return ResponseUtil.success("Request Successful", book);
+    }
+
 }
