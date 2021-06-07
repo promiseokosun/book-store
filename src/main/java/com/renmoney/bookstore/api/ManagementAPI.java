@@ -2,7 +2,7 @@ package com.renmoney.bookstore.api;
 
 
 import com.renmoney.bookstore.dto.BookParams;
-import com.renmoney.bookstore.model.AppUser;
+import com.renmoney.bookstore.model.User;
 import com.renmoney.bookstore.model.Book;
 import com.renmoney.bookstore.model.Borrower;
 import com.renmoney.bookstore.response.BaseResponse;
@@ -80,15 +80,18 @@ public class ManagementAPI {
 
     @PostMapping("create-user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public BaseResponse<AppUser> createUser(@RequestBody AppUser appUser) {
-        if(appUser == null) {
+    public BaseResponse<User> createUser(@RequestBody User user) {
+        if(user == null || user.getType() == null) {
             return ResponseUtil.invalidOrNullInput("Invalid Input");
         }
 
-        if( !(appUser.getType().equals(NORMAL_USER.name()) || appUser.getType().equals(ADMIN_ASSISTANT.name()) || appUser.getType().equals(ADMIN.name()))) {
+        if( !(user.getType().equals(NORMAL_USER.name())
+                || user.getType().equals(ADMIN_ASSISTANT.name())
+                || user.getType().equals(ADMIN.name())
+        )) {
             return ResponseUtil.invalidOrNullInput("Invalid Account Type - NORMAL_USER, ADMIN_ASSISTANT, ADMIN");
         }
-        return ResponseUtil.success("Request Successful", userService.createUser(appUser));
+        return ResponseUtil.success("Request Successful", userService.createUser(user));
 
     }
 

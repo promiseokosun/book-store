@@ -4,7 +4,8 @@ import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 
 @Entity
-public class AppUser {
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,9 +17,9 @@ public class AppUser {
 
     private String type;
 
-    public AppUser() {}
+    public User() {}
 
-    public AppUser(String email, String password, String type) {
+    public User(String email, String password, String type) {
         this.email = email;
         this.password = password;
         this.type = type;

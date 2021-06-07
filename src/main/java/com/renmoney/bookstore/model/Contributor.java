@@ -7,7 +7,6 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "contributors")
 public class Contributor {
 
     @Id
@@ -27,8 +26,6 @@ public class Contributor {
         this.name = name;
         this.email = email;
     }
-
-    // TODO 1. setBook() should be JsonIgnored.
 
     public Integer getId() {
         return id;

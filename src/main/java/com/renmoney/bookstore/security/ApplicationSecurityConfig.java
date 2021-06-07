@@ -1,6 +1,7 @@
 package com.renmoney.bookstore.security;
 
-import com.renmoney.bookstore.auth.ApplicationUserDetailsService;
+
+import com.renmoney.bookstore.security.auth.ApplicationUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,10 +1,9 @@
-package com.renmoney.bookstore.auth;
+package com.renmoney.bookstore.security.auth;
 
 import com.renmoney.bookstore.constant.AccountType;
-import com.renmoney.bookstore.model.AppUser;
+import com.renmoney.bookstore.model.User;
 import com.renmoney.bookstore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,25 +23,25 @@ public class ApplicationUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AppUser appUser = userService.findByEmail(username);
-        if (appUser == null) {
+        User user = userService.findByEmail(username);
+        if (user == null) {
             throw new UsernameNotFoundException(String.format("Username %s not found", username));
         }
 
         // userType check
-        if(appUser.getType().equals(AccountType.ADMIN.name())) {
-            return new ApplicationUser(appUser.getEmail(), appUser.getPassword(), ADMIN.getGrantedAuthorities(),
+        if(user.getType().equals(AccountType.ADMIN.name())) {
+            return new ApplicationUser(user.getEmail(), user.getPassword(), ADMIN.getGrantedAuthorities(),
                     true, true, true, true
             );
         }
-        else if(appUser.getType().equals(AccountType.ADMIN_ASSISTANT.name())) {
-            return new ApplicationUser(appUser.getEmail(), appUser.getPassword(), ADMIN_ASSISTANT.getGrantedAuthorities(),
+        else if(user.getType().equals(AccountType.ADMIN_ASSISTANT.name())) {
+            return new ApplicationUser(user.getEmail(), user.getPassword(), ADMIN_ASSISTANT.getGrantedAuthorities(),
                     true,true, true, true
             );
         }
 
-        else if(appUser.getType().equals(AccountType.NORMAL_USER.name())) {
-            return new ApplicationUser(appUser.getEmail(), appUser.getPassword(), NORMAL.getGrantedAuthorities(),
+        else if(user.getType().equals(AccountType.NORMAL_USER.name())) {
+            return new ApplicationUser(user.getEmail(), user.getPassword(), NORMAL.getGrantedAuthorities(),
                     true,true, true, true
             );
         }

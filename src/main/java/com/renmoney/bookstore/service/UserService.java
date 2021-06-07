@@ -1,9 +1,9 @@
 package com.renmoney.bookstore.service;
 
-import com.renmoney.bookstore.model.AppUser;
+import com.renmoney.bookstore.model.User;
 
 public interface UserService {
-    AppUser createUser(AppUser user);
+    User createUser(User user);
 
-    AppUser findByEmail(String email);
+    User findByEmail(String email);
 }

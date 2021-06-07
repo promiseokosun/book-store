@@ -1,4 +1,4 @@
-package com.renmoney.bookstore.auth;
+package com.renmoney.bookstore.security.auth;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

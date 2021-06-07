@@ -1,9 +1,9 @@
 package com.renmoney.bookstore.repo;
 
-import com.renmoney.bookstore.model.AppUser;
+import com.renmoney.bookstore.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepo extends JpaRepository<AppUser, Integer> {
+public interface UserRepo extends JpaRepository<User, Integer> {
 
-    AppUser findByEmail(String email);
+    User findByEmail(String email);
 }
