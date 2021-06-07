@@ -20,7 +20,13 @@ public class Borrower {
 
     private Date returnDate;
 
-    @OneToMany
+    private boolean returned;
+
+    private Integer borrowedBookId;
+
+    private String borrowedBookTitle;
+
+    @OneToMany(mappedBy = "borrower")
     private List<Book> books;
 
     public Borrower() {
@@ -72,6 +78,33 @@ public class Borrower {
         this.returnDate = returnDate;
     }
 
+    public boolean isReturned() {
+        return returned;
+    }
+
+    @JsonIgnore
+    public void setReturned(boolean returned) {
+        this.returned = returned;
+    }
+
+    public Integer getBorrowedBookId() {
+        return borrowedBookId;
+    }
+
+    @JsonIgnore
+    public void setBorrowedBookId(Integer borrowedBookId) {
+        this.borrowedBookId = borrowedBookId;
+    }
+
+    public String getBorrowedBookTitle() {
+        return borrowedBookTitle;
+    }
+
+    @JsonIgnore
+    public void setBorrowedBookTitle(String borrowedBookTitle) {
+        this.borrowedBookTitle = borrowedBookTitle;
+    }
+
     public void addBook(Book book) {
         if(books.isEmpty() || books == null) {
             books = new ArrayList<>();
@@ -86,6 +119,9 @@ public class Borrower {
                 ", borrowerName='" + borrowerName + '\'' +
                 ", borrowerEmail='" + borrowerEmail + '\'' +
                 ", returnDate=" + returnDate +
+                ", returned=" + returned +
+                ", borrowedBookId=" + borrowedBookId +
+                ", borrowedBookTitle='" + borrowedBookTitle + '\'' +
                 ", books=" + books +
                 '}';
     }

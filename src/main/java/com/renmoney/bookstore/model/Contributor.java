@@ -17,7 +17,7 @@ public class Contributor {
 
     private String email;
 
-    @OneToMany
+    @OneToMany(mappedBy = "contributor")
     private List<Book> book;
 
     public Contributor() {}

@@ -163,17 +163,18 @@ public class BookServiceTest {
     @Test
     public void test_restoreBook() {
         givenThatUserIsLoggedIn();
-        whenRestorBookIsInvoked();
+        whenRestoreBookIsInvoked();
         thenBookStatusShouldBeSetToAVAILABLE();
     }
 
-    private void whenRestorBookIsInvoked() {
+    private void whenRestoreBookIsInvoked() {
         Integer bookId = 3;
         book = bookService.restoreBook(bookId);
         bookStatus = book.getStatus().name();
     }
 
     private void thenBookStatusShouldBeSetToAVAILABLE() {
+
         books = bookService.getBooksByStatus(BookStatus.AVAILABLE);
     }
 

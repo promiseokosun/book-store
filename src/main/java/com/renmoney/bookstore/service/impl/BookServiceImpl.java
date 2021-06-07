@@ -75,8 +75,11 @@ public class BookServiceImpl implements BookService {
 
         if(optionalBook.isPresent()) {
             Book book = optionalBook.get();
+            borrower.setBorrowedBookId(bookId);
+            borrower.setBorrowedBookTitle(book.getTitle());
             book.setBorrower(borrower);
             book.setStatus(BookStatus.BORROWED);
+            borrower.setReturned(false);
             return bookRepo.saveAndFlush(book);
         }
 
@@ -103,9 +106,14 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book restoreBook(Integer bookId) {
         Optional<Book> optionalBook = bookRepo.findById(bookId);
+
         if(optionalBook.isPresent()) {
             Book book = optionalBook.get();
             book.setStatus(BookStatus.AVAILABLE);
+            if(book.getBorrower() != null) {
+                book.getBorrower().setReturned(true);
+            }
+            book.setBorrower(null);
             return bookRepo.saveAndFlush(book);
         }
         return null;

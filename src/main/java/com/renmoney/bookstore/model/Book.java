@@ -26,9 +26,11 @@ public class Book {
     private Date createdAt;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "contributor_id")
     private Contributor contributor;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "borrower_id")
     private Borrower borrower;
 
 //    @OneToMany(mappedBy = "book")
