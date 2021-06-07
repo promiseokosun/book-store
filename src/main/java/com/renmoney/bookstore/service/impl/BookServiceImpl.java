@@ -106,6 +106,7 @@ public class BookServiceImpl implements BookService {
         if(optionalBook.isPresent()) {
             Book book = optionalBook.get();
             book.setStatus(BookStatus.AVAILABLE);
+            bookRepo.saveAndFlush(book);
             return book;
         }
         return null;
