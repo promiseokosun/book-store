@@ -1,7 +1,7 @@
 package com.renmoney.bookstore.constant;
 
 public enum AccountType {
-    BORROWER,
-    USER,
+    NORMAL_USER,
+    ADMIN_ASSISTANT,
     ADMIN
 }

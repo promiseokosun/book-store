@@ -1,20 +1,18 @@
 package com.renmoney.bookstore.security;
 
+import com.renmoney.bookstore.auth.ApplicationUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
-import static com.renmoney.bookstore.security.ApplicationUserPermission.*;
 import static com.renmoney.bookstore.security.ApplicationUserRole.*;
 
 @Configuration
@@ -23,29 +21,32 @@ import static com.renmoney.bookstore.security.ApplicationUserRole.*;
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
+    private final ApplicationUserDetailsService applicationUserDetailsService;
+
+    @Autowired
+    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, ApplicationUserDetailsService applicationUserDetailsService) {
+        this.passwordEncoder = passwordEncoder;
+        this.applicationUserDetailsService = applicationUserDetailsService;
+    }
 
     private final String [] WHITELIST = {
             "/",
             "/css/*",
-            "/js/*"
+            "/js/*",
+            "/h2-console/**"
     };
-
-    @Autowired
-    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-//                .csrf().disable()
+//                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//                .and()
+                .headers().frameOptions().disable()
+                .and()
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(WHITELIST).permitAll()
-                .antMatchers("/api/**").hasAnyRole(NORMAL.name(), ADMIN_ASSISTANT.name(), ADMIN.name())
-                .antMatchers(HttpMethod.DELETE,"/management/api/**").hasAuthority(BOOK_WRITE.getPermission())
-                .antMatchers(HttpMethod.POST,"/management/api/**").hasAuthority(BOOK_WRITE.getPermission())
-                .antMatchers(HttpMethod.PUT,"/management/api/**").hasAuthority(BOOK_WRITE.getPermission())
-                .antMatchers(HttpMethod.GET,"/management/api/**").hasAnyRole(ADMIN.name(), ADMIN_ASSISTANT.name())
+                .antMatchers("/api/**").hasAnyRole(NORMAL.name(), ADMIN.name())
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -53,34 +54,16 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(daoAuthenticationProvider());
+    }
+
     @Bean
-    protected UserDetailsService userDetailsService() {
-        UserDetails adamsUser = User.builder()
-                .username("adams")
-                .password(passwordEncoder.encode("password"))
-//                .roles(ADMIN.name())
-                .authorities(ADMIN.getGrantedAuthorities())
-                .build();
-
-        UserDetails mercyUser = User.builder()
-                .username("mercy")
-                .password(passwordEncoder.encode("password"))
-//                .roles(NORMAL.name())
-                .authorities(NORMAL.getGrantedAuthorities())
-                .build();
-
-
-        UserDetails promiseUser = User.builder()
-                .username("promise")
-                .password(passwordEncoder.encode("password"))
-                .authorities(ADMIN_ASSISTANT.getGrantedAuthorities())
-//                .roles(NORMAL.name())
-                .build();
-
-        return new InMemoryUserDetailsManager(
-                mercyUser,
-                promiseUser,
-                adamsUser
-        );
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder);
+        provider.setUserDetailsService(applicationUserDetailsService);
+        return provider;
     }
 }
+

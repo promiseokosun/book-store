@@ -1,31 +1,36 @@
 package com.renmoney.bookstore.api;
 
 
-import com.renmoney.bookstore.constant.BookStatus;
 import com.renmoney.bookstore.dto.BookParams;
+import com.renmoney.bookstore.model.AppUser;
 import com.renmoney.bookstore.model.Book;
 import com.renmoney.bookstore.model.Borrower;
 import com.renmoney.bookstore.response.BaseResponse;
 import com.renmoney.bookstore.response.ResponseUtil;
 import com.renmoney.bookstore.service.BookService;
+import com.renmoney.bookstore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import static com.renmoney.bookstore.constant.AccountType.*;
+
 
 @RestController
-@RequestMapping("management/api/v1/books")
-public class BookManagementAPI {
+@RequestMapping("management/api/v1")
+public class ManagementAPI {
 
     private BookService bookService;
 
+    private UserService userService;
+
     @Autowired
-    public BookManagementAPI(BookService bookService) {
+    public ManagementAPI(BookService bookService, UserService userService) {
         this.bookService = bookService;
+        this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping("books")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public BaseResponse<Book> addBook(@RequestBody BookParams params) {
         if(params == null) {
@@ -35,7 +40,7 @@ public class BookManagementAPI {
 
     }
 
-    @PutMapping("{bookId}")
+    @PutMapping("books/{bookId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public BaseResponse<Book> editBook(@PathVariable("bookId") Integer bookId, @RequestBody BookParams params) {
         Book book = bookService.editBook(bookId, params);
@@ -45,7 +50,7 @@ public class BookManagementAPI {
         return ResponseUtil.success("Request Successful", book);
     }
 
-    @DeleteMapping("{bookId}")
+    @DeleteMapping("books/{bookId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public BaseResponse<Book> deleteBook(@PathVariable("bookId") Integer bookId) {
         Book book = bookService.getBookById(bookId);
@@ -56,7 +61,7 @@ public class BookManagementAPI {
         return ResponseUtil.success("Request Successful", null);
     }
 
-    @PutMapping("{bookId}/lend")
+    @PutMapping("books/{bookId}/lend")
     @PreAuthorize("hasAuthority('book:lend')")
     public BaseResponse<Book> lendBook(@PathVariable("bookId") Integer bookId, @RequestBody Borrower borrower) {
 
@@ -73,5 +78,18 @@ public class BookManagementAPI {
         return ResponseUtil.success("Request Successful", book);
     }
 
+    @PostMapping("create-user")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public BaseResponse<AppUser> createUser(@RequestBody AppUser appUser) {
+        if(appUser == null) {
+            return ResponseUtil.invalidOrNullInput("Invalid Input");
+        }
+
+        if( !(appUser.getType().equals(NORMAL_USER.name()) || appUser.getType().equals(ADMIN_ASSISTANT.name()) || appUser.getType().equals(ADMIN.name()))) {
+            return ResponseUtil.invalidOrNullInput("Invalid Account Type - NORMAL_USER, ADMIN_ASSISTANT, ADMIN");
+        }
+        return ResponseUtil.success("Request Successful", userService.createUser(appUser));
+
+    }
 
 }

@@ -68,18 +68,19 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book lendBook(Integer bookId, Borrower borrower) {
-        // get the book
-        Book book = getBookById(bookId);
+        List<Book> availableBooks = getBooksByStatus(BookStatus.AVAILABLE);
+        Optional<Book> optionalBook = availableBooks.stream()
+                .filter(b -> bookId.equals(b.getId()))
+                .findFirst();
 
-        if(book == null) {
-            return null;
+        if(optionalBook.isPresent()) {
+            Book book = optionalBook.get();
+            book.setBorrower(borrower);
+            book.setStatus(BookStatus.BORROWED);
+            return bookRepo.saveAndFlush(book);
         }
 
-        // associate the book to a borrower.
-        book.setBorrower(borrower);
-        book.setStatus(BookStatus.BORROWED);
-
-        return bookRepo.saveAndFlush(book);
+        return null;
     }
 
     @Override

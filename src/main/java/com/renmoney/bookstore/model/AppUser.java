@@ -4,24 +4,24 @@ import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 
 @Entity
-@Table(name = "users")
-public class User {
+public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    private String username;
+    private String email;
 
     private String password;
 
-    private Boolean isEnabled = true;
+    private String type;
 
-    public User() {}
+    public AppUser() {}
 
-    public User(String username, String password, Boolean isEnabled) {
-        this.username = username;
+    public AppUser(String email, String password, String type) {
+        this.email = email;
         this.password = password;
+        this.type = type;
     }
 
     public Integer getId() {
@@ -32,12 +32,12 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -48,21 +48,21 @@ public class User {
         this.password = password;
     }
 
-    public Boolean getEnabled() {
-        return isEnabled;
+    public String getType() {
+        return type;
     }
 
-    public void setEnabled(Boolean enabled) {
-        isEnabled = enabled;
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", isEnabled=" + isEnabled +
+                ", type='" + type + '\'' +
                 '}';
     }
 }
